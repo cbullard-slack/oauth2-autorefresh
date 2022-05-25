@@ -1,7 +1,7 @@
 {
-  "name": "nodeexpresstemplate",
+  "name": "oauthtworefreshapp",
   "version": "1.0.0",
-  "description": "A template for me to use as a base line for creating all Slack Tester applications",
+  "description": "A slack tester app for testing the OAuth 2 with Refresh Token",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
