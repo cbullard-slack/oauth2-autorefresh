@@ -7,7 +7,7 @@ v1.get('', function(req, res){
 
 v1.get("/auth", (req,res) => {
     res.send(200);
-    console.log(req);
+    console.log(req.query);
 });
 
 module.exports = v1;
