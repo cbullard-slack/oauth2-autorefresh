@@ -7,7 +7,8 @@ const app = express();
 // define env variablesÍ
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const BOT_TOKEN = process.env.BOT_TOKEN;
+//const BOT_TOKEN = process.env.BOT_TOKEN;
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 app.use("/slack/v1", v1);
 
