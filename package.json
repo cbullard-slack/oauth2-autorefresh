@@ -1,0 +1,23 @@
+{
+  "name": "nodeexpresstemplate",
+  "version": "1.0.0",
+  "description": "A template for me to use as a base line for creating all Slack Tester applications",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "author": "cbullard@slack-corp.com",
+  "license": "ISC"
+}
