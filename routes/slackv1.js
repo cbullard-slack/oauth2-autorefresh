@@ -2,9 +2,6 @@ const { urlencoded } = require("express");
 const express = require("express");
 const v1 = express.Router();
 
-v1.use(express.json);
-v1.use(express.urlencoded({ extended: true }));
-
 v1.get("", function (req, res) {
   res.json({ success: true });
 });
