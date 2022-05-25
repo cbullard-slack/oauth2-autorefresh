@@ -6,6 +6,7 @@ v1.get("", function (req, res) {
 });
 
 v1.get("/auth", (req, res) => {
+    console.log(req)
   if (!req.hasOwnProperty("query")) {
     res.status(418).send("No Param");
     return;
