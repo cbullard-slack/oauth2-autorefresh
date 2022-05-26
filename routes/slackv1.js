@@ -1,4 +1,3 @@
-const { urlencoded } = require("express");
 const express = require("express");
 const v1 = express.Router();
 
@@ -7,7 +6,7 @@ v1.get("", function (req, res) {
 });
 
 v1.get("/auth", (req, res) => {
-  const query = JSON.parse(req.query);
+  const query = req.query;
   console.log(query['code']);
   if (!query.hasOwnProperty("code")) {
     res.status(418).send("No Code");
