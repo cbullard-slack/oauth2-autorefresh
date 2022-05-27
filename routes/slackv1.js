@@ -15,7 +15,7 @@ const CONNECTION_STRING = process.env.DATABASE_URL;
 // const pgClient = new pg.Client(CONNECTION_STRING);
 const pool = new Pool({
   connectionString: CONNECTION_STRING,
-  ssl: true,
+  ssl: false,
 });
 
 const API_URL = "https://slack.com/api/";
