@@ -9,7 +9,14 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CONNECTION_STRING = process.env.DATABASE_URL;
 
-const pgClient = new pg.Client(CONNECTION_STRING);
+const pgClient = new pg.Client({
+    user:"cufwbkefsdzvid",
+    password:env.DATABASE_PASSWORD,
+    database:"d4p1b8dfaja8ng",
+    port:5432,
+    host:"ec2-54-204-56-171.compute-1.amazonaws.com",
+    ssl:true
+});
 
 const API_URL = "https://slack.com/api/";
 
