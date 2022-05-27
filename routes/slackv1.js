@@ -55,10 +55,12 @@ v1.get("/auth", (req, res) => {
   //   res.redirect('/sharks/shark-facts')
 });
 
-function PostgresCheckExist(id) {
+async function PostgresCheckExist(id) {
   pgClient.connect();
-  const query = pgClient.query(`SELECT token from oauth where id = '${id}'`);
- console.log(query);
+  const query = await pgClient.query(
+    `SELECT token from oauth where id = '${id}'`
+  );
+  console.log(query.rowCount.toString());
   pgClient.end();
 }
 
