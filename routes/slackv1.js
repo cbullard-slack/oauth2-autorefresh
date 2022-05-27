@@ -32,6 +32,7 @@ v1.get("/auth", (req, res) => {
   params.append("client_secret", CLIENT_SECRET);
   params.append("grant_type", "refresh_token");
   params.append("refresh_token", REFRESH_TOKEN);
+  console.log(REFRESH_TOKEN)
   if (!query.hasOwnProperty("code")) {
     res.status(418).send("No Code");
     return;
