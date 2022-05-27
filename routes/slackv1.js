@@ -39,9 +39,9 @@ v1.get("/auth", (req, res) => {
     .post(API_URL + "oauth.v2.access", params, config)
     .then((res) => {
       if (res.data.hasOwnProperty("bot_user_id")) {
-          PostgresCheckExist(res.data.bot_user_id)
+        PostgresCheckExist(res.data.bot_user_id);
       } else if (res.data.hasOwnProperty("user_id")) {
-          PostgresCheckExist(res.data.user_id)
+        PostgresCheckExist(res.data.user_id);
       }
       console.log(res);
     })
@@ -58,6 +58,7 @@ function PostgresCheckExist(id) {
   query.on("row", (row, res) => {
     console.log(row);
   });
+  pgClient.end();
 }
 
 module.exports = v1;
