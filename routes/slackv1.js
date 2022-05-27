@@ -32,7 +32,7 @@ v1.get("/auth", (req, res) => {
   params.append("client_secret", CLIENT_SECRET);
   params.append("grant_type", "refresh_token");
   params.append("refresh_token", REFRESH_TOKEN);
-  console.log(REFRESH_TOKEN)
+  console.log(REFRESH_TOKEN);
   if (!query.hasOwnProperty("code")) {
     res.status(418).send("No Code");
     return;
@@ -58,9 +58,7 @@ v1.get("/auth", (req, res) => {
 function PostgresCheckExist(id) {
   pgClient.connect();
   const query = pgClient.query(`SELECT token from oauth where id = '${id}'`);
-  query.on("row", (row, res) => {
-    console.log(row);
-  });
+ console.log(query);
   pgClient.end();
 }
 
