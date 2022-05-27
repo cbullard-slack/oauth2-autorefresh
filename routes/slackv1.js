@@ -50,10 +50,25 @@ v1.get("/auth", (req, res) => {
   axios
     .post(API_URL + "oauth.v2.access", params, config)
     .then((res) => {
+      const username = res.data.username;
+      const token = res.data.token;
+      const refresh_token = res.data.refresh_token;
+      const time_to_refresh = res.data.time_to_refresh;
       if (res.data.hasOwnProperty("bot_user_id")) {
-        PostgresCheckExist(res.data.bot_user_id);
+          const id = res.data.bot_user_id
+        if (PostgresCheckExist(res.data.bot_user_id)) {
+        }else{
+            let date = new Date();
+            Date.prototype.addSecs = (s) =>{
+                this.setTime(this.getTime() + (s*1000));
+                return this;
+            }
+            date.addSecs(time_to_refresh)
+            PostgresAddOauth(id,token,refresh_token,date,"");
+        }
       } else if (res.data.hasOwnProperty("user_id")) {
-        PostgresCheckExist(res.data.user_id);
+        if (PostgresCheckExist(res.data.user_id)) {
+        }
       }
       console.log(res.data);
     })
@@ -65,26 +80,54 @@ v1.get("/auth", (req, res) => {
 });
 
 async function PostgresCheckExist(id) {
-  //   try {
-  //     const client = await pool.connect();
-  //     const result = await client.query(
-  //       `SELECT token from oauth where id = '${id}'`
-  //     );
-  //     const results = { results: result ? result.rows : null };
-  //     console.log(results);
-  //     client.release();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
+  try {
+    client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
+      if (err) throw err;
+      if (res.rowCount <= 0) {
+        client.end();
+        return false;
+      } else if (res.rowCount >= 2) {
+        client.end();
+        throw "ERROR: More than one item returned on for Primary Key. Please check database";
+      } else {
+        console.log(res.rowCount);
+        client.end();
+        return true;
+      }
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
 
-  client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
-    if (err) console.error(err);
-    for (let row of res.rows) {
-      console.log(JSON.stringify(row));
-    }
-    console.log(res.rowCount);
-    client.end();
-  });
+async function PostgresUpdateOauth(id, token, refreshToken, time) {
+  try {
+    client.query(
+      `UPDATE oauth SET token = ${token}, refresh = ${time}, refresh_token = ${refreshToken} where id = '${id}';`,
+      (err, res) => {
+        if (err) throw err;
+
+        console.log(res);
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function PostgresAddOauth(id, token, refreshToken, time, username) {
+  try {
+    client.query(
+      `INSERT INTO oauth([ id, token, refresh, refresh_token,username) VALUES ([ ${id},${token}, ${time}, ${refreshToken},${username}) ;`,
+      (err, res) => {
+        if (err) throw err;
+
+        console.log(res);
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 module.exports = v1;
