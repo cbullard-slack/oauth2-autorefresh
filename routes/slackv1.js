@@ -3,19 +3,19 @@ const axios = require("axios");
 const pg = require("pg");
 const v1 = express.Router();
 
+const { Pool } = require("pg");
+const client = require("pg/lib/native/client");
+
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CONNECTION_STRING = process.env.DATABASE_URL;
 
-const pgClient = new pg.Client({
-    user:"cufwbkefsdzvid",
-    password:env.DATABASE_PASSWORD,
-    database:"d4p1b8dfaja8ng",
-    port:5432,
-    host:"ec2-54-204-56-171.compute-1.amazonaws.com",
-    ssl:true
+// const pgClient = new pg.Client(CONNECTION_STRING);
+const pool = new Pool({
+  connectionString: CONNECTION_STRING,
+  ssl: true,
 });
 
 const API_URL = "https://slack.com/api/";
@@ -63,21 +63,26 @@ v1.get("/auth", (req, res) => {
   //   res.redirect('/sharks/shark-facts')
 });
 
-function PostgresCheckExist(id) {
-  try {
-    pgClient.connect();
-  } catch (err) {
-    console.error(err);
-  }
-  pgClient
-    .query(`SELECT token from oauth where id = '${id}'`)
-    .then((res) => {
-      console.log(`hello ${res}`);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  pgClient.end;
+async function PostgresCheckExist(id) {
+ try {
+     const client = await pool.connect()
+     const result = await client.query(`SELECT token from oauth where id = '${id}'`);
+     const results = {'results': (result) ? result.rows : null};
+     console.log(results);
+     client.release();
+ }catch(err)
+ {
+     console.error(err);
+ }
 }
 
 module.exports = v1;
+
+// const pgClient = new pg.Client({
+//     user:"cufwbkefsdzvid",
+//     password:env.DATABASE_PASSWORD,
+//     database:"d4p1b8dfaja8ng",
+//     port:5432,
+//     host:"ec2-54-204-56-171.compute-1.amazonaws.com",
+//     ssl:true
+// });
