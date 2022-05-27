@@ -1,11 +1,15 @@
 const express = require("express");
 const axios = require("axios");
+const pg = require("pg");
 const v1 = express.Router();
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 //const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const CONNECTION_STRING = process.env.DATABASE_URL;
+
+const pgClient = new pg.Client(CONNECTION_STRING);
 
 const API_URL = "https://slack.com/api/";
 
@@ -34,6 +38,11 @@ v1.get("/auth", (req, res) => {
   axios
     .post(API_URL + "oauth.v2.access", params, config)
     .then((res) => {
+      if (res.data.hasOwnProperty("bot_user_id")) {
+          PostgresCheckExist(res.data.bot_user_id)
+      } else if (res.data.hasOwnProperty("user_id")) {
+          PostgresCheckExist(res.data.user_id)
+      }
       console.log(res);
     })
     .catch((err) => {
@@ -42,5 +51,13 @@ v1.get("/auth", (req, res) => {
   res.send(200);
   //   res.redirect('/sharks/shark-facts')
 });
+
+function PostgresCheckExist(id) {
+  pgClient.connect();
+  const query = pgClient.query(`SELECT token from oauth where id = '${id}'`);
+  query.on("row", (row, res) => {
+    console.log(row);
+  });
+}
 
 module.exports = v1;
