@@ -57,13 +57,13 @@ v1.get("/auth", (req, res) => {
 
 async function PostgresCheckExist(id) {
   pgClient.connect();
-  pgClient.query(`SELECT token from oauth where id = '${id}'`, (err, res) => {
-    if (!err) {
-      console.log(res.rows);
-    } else {
-      console.error(err.message);
-    }
-  });
+  pgClient
+    .query(`SELECT token from oauth where id = '${id}'`)
+    .then((res) => {
+        console.log(res.rows);
+    }).catch((err) => {
+        console.error(err);
+    });
   pgClient.end;
 }
 
