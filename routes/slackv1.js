@@ -64,7 +64,7 @@ v1.get("/auth", (req, res) => {
                 return this;
             }
             date.addSecs(time_to_refresh)
-            PostgresAddOauth(id,token,refresh_token,date,"");
+            PostgresAddOauth(id,token,refresh_token,date);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
         if (PostgresCheckExist(res.data.user_id)) {
@@ -115,10 +115,10 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
   }
 }
 
-async function PostgresAddOauth(id, token, refreshToken, time, username) {
+async function PostgresAddOauth(id, token, refreshToken, time) {
   try {
     client.query(
-      `INSERT INTO oauth([ id, token, refresh, refresh_token,username) VALUES ([ ${id},${token}, ${time}, ${refreshToken},${username}) ;`,
+      `INSERT INTO oauth([ id, token, refresh, refresh_token) VALUES ([ ${id},${token}, ${time}, ${refreshToken}) ;`,
       (err, res) => {
         if (err) throw err;
 
