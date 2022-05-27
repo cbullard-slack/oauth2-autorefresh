@@ -62,7 +62,7 @@ function PostgresCheckExist(id) {
   pgClient
     .query(`SELECT token from oauth where id = '${id}'`)
     .then((res) => {
-      console.log(res.rows);
+      console.log(`hello ${res}`);
     })
     .catch((err) => {
       console.error(err);
