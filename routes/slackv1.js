@@ -11,6 +11,8 @@ const CONNECTION_STRING = process.env.DATABASE_URL;
 
 const pgClient = new pg.Client(CONNECTION_STRING);
 
+pgClient.connect();
+
 const API_URL = "https://slack.com/api/";
 
 v1.get("", function (req, res) {
@@ -57,7 +59,6 @@ v1.get("/auth", (req, res) => {
 });
 
 function PostgresCheckExist(id) {
-  pgClient.connect();
   pgClient
     .query(`SELECT token from oauth where id = '${id}'`)
     .then((res) => {
