@@ -5,7 +5,7 @@ const v1 = express.Router();
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-//const BOT_TOKEN = process.env.BOT_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CONNECTION_STRING = process.env.DATABASE_URL;
 
@@ -24,6 +24,7 @@ v1.get("/auth", (req, res) => {
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
+      "Authorisation": BOT_TOKEN
     },
   };
 
