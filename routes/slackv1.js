@@ -4,7 +4,7 @@ const pg = require("pg");
 const v1 = express.Router();
 
 const { Pool } = require("pg");
-const client = require("pg/lib/native/client");
+// const client = require("pg/lib/native/client");
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -64,16 +64,17 @@ v1.get("/auth", (req, res) => {
 });
 
 async function PostgresCheckExist(id) {
- try {
-     const client = await pool.connect()
-     const result = await client.query(`SELECT token from oauth where id = '${id}'`);
-     const results = {'results': (result) ? result.rows : null};
-     console.log(results);
-     client.release();
- }catch(err)
- {
-     console.error(err);
- }
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      `SELECT token from oauth where id = '${id}'`
+    );
+    const results = { results: result ? result.rows : null };
+    console.log(results);
+    client.release();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 module.exports = v1;
