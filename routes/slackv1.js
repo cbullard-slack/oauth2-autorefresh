@@ -24,7 +24,7 @@ v1.get("/auth", (req, res) => {
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorisation": BOT_TOKEN
+      Authorization: BOT_TOKEN,
     },
   };
 
@@ -36,6 +36,7 @@ v1.get("/auth", (req, res) => {
     res.status(418).send("No Code");
     return;
   }
+  params.append("code", query.code);
   axios
     .post(API_URL + "oauth.v2.access", params, config)
     .then((res) => {
