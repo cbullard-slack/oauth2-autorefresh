@@ -43,7 +43,7 @@ v1.get("/auth", (req, res) => {
       } else if (res.data.hasOwnProperty("user_id")) {
         PostgresCheckExist(res.data.user_id);
       }
-      console.log(res);
+      console.log(res.data);
     })
     .catch((err) => {
       console.error(err);
