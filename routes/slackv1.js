@@ -1,10 +1,8 @@
 const express = require("express");
 const axios = require("axios");
-const pg = require("pg");
 const v1 = express.Router();
 
-const { Pool } = require("pg");
-// const client = require("pg/lib/native/client");
+const { Client } = require("pg");
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -12,11 +10,14 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CONNECTION_STRING = process.env.DATABASE_URL;
 
-// const pgClient = new pg.Client(CONNECTION_STRING);
-const pool = new Pool({
-  connectionString: CONNECTION_STRING,
-  ssl: true,
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
+
+client.connect();
 
 const API_URL = "https://slack.com/api/";
 
@@ -64,17 +65,25 @@ v1.get("/auth", (req, res) => {
 });
 
 async function PostgresCheckExist(id) {
-  try {
-    const client = await pool.connect();
-    const result = await client.query(
-      `SELECT token from oauth where id = '${id}'`
-    );
-    const results = { results: result ? result.rows : null };
-    console.log(results);
-    client.release();
-  } catch (err) {
-    console.error(err);
-  }
+  //   try {
+  //     const client = await pool.connect();
+  //     const result = await client.query(
+  //       `SELECT token from oauth where id = '${id}'`
+  //     );
+  //     const results = { results: result ? result.rows : null };
+  //     console.log(results);
+  //     client.release();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+
+  client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
+    if (err) throw err;
+    for (let row of res.rows) {
+      console.log(JSON.stringify(row));
+    }
+    client.end();
+  });
 }
 
 module.exports = v1;
