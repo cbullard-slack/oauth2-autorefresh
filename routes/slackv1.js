@@ -85,7 +85,7 @@ async function PostgresCheckExist(id) {
     console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
     client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
       console.log(res.Result);
-      const rowCount = res.Result.rowCount;
+    //   const rowCount = res.Result.rowCount;
       if (err) throw err;
       if (rowCount <= 0) {
         client.end();
