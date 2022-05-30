@@ -23,6 +23,7 @@ const API_URL = "https://slack.com/api/";
 
 v1.get("", async function (req, res) {
   const exists = await PostgresCheckExist(1);
+  console.log(exists);
   res.json({ success: exists });
 });
 
@@ -81,6 +82,7 @@ v1.get("/auth", (req, res) => {
 
 async function PostgresCheckExist(id) {
   try {
+    console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
     client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
       if (err) throw err;
       if (res.rowCount <= 0) {
