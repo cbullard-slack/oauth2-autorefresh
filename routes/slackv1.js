@@ -22,8 +22,8 @@ client.connect();
 const API_URL = "https://slack.com/api/";
 
 v1.get("", function (req, res) {
-  PostgresCheckExist(1);
-  res.json({ success: true });
+  const exists = PostgresCheckExist(1);
+  res.json({ success: exists });
 });
 
 v1.get("/auth", (req, res) => {
@@ -55,16 +55,16 @@ v1.get("/auth", (req, res) => {
       const refresh_token = res.data.refresh_token;
       const time_to_refresh = res.data.time_to_refresh;
       if (res.data.hasOwnProperty("bot_user_id")) {
-          const id = res.data.bot_user_id
+        const id = res.data.bot_user_id;
         if (PostgresCheckExist(res.data.bot_user_id)) {
-        }else{
-            let date = new Date();
-            Date.prototype.addSecs = (s) =>{
-                this.setTime(this.getTime() + (s*1000));
-                return this;
-            }
-            date.addSecs(time_to_refresh)
-            PostgresAddOauth(id,token,refresh_token,date);
+        } else {
+          let date = new Date();
+          Date.prototype.addSecs = (s) => {
+            this.setTime(this.getTime() + s * 1000);
+            return this;
+          };
+          date.addSecs(time_to_refresh);
+          PostgresAddOauth(id, token, refresh_token, date);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
         if (PostgresCheckExist(res.data.user_id)) {
