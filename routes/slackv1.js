@@ -85,15 +85,16 @@ async function PostgresCheckExist(id) {
     console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
     client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
       console.log(res);
+      const rowCount = res.Result.rowCount;
       if (err) throw err;
-      if (res.rowCount <= 0) {
+      if (rowCount <= 0) {
         client.end();
         return false;
-      } else if (res.rowCount >= 2) {
+      } else if (rowCount >= 2) {
         client.end();
         throw "ERROR: More than one item returned on for Primary Key. Please check database";
       } else {
-        console.log(res.rowCount);
+        console.log(rowCount);
         client.end();
         return true;
       }
