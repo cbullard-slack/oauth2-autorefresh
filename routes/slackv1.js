@@ -21,10 +21,10 @@ client.connect();
 
 const API_URL = "https://slack.com/api/";
 
-v1.get("", async function (req, res) {
-  const exists = await PostgresCheckExist(1);
-  console.log(exists);
-  res.json({ success: exists });
+v1.get("", async (req, res) => {
+  console.log(await PostgresCheckExist(1));
+//   console.log(exists);
+  res.json({ success: false });
 });
 
 v1.get("/auth", (req, res) => {
@@ -90,7 +90,7 @@ async function PostgresCheckExist(id) {
       if (rowCount <= 0) {
         console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
         client.end();
-        console.log("`Made is passed the 'client.end()' call!")
+        console.log(`Made is passed the 'client.end()' call!`)
         return false;
       } else if (rowCount >= 2) {
         client.end();
