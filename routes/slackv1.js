@@ -21,8 +21,8 @@ client.connect();
 
 const API_URL = "https://slack.com/api/";
 
-v1.get("", function (req, res) {
-  const exists = PostgresCheckExist(1);
+v1.get("", async function (req, res) {
+  const exists = await PostgresCheckExist(1);
   res.json({ success: exists });
 });
 
