@@ -80,7 +80,7 @@ v1.get("/auth", (req, res) => {
   //   res.redirect('/sharks/shark-facts')
 });
 
-async function PostgresCheckExist(id) {
+const PostgresCheckExist = async (id) => {
   try {
     console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
     client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
