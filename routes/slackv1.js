@@ -88,15 +88,16 @@ async function PostgresCheckExist(id) {
       const rowCount = res.rowCount;
       if (err) throw err;
       if (rowCount <= 0) {
-          console.log(`The row count was ${rowCount}!\nEntered the <= if marker`)
+        console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
         client.end();
+        console.log("`Made is passed the 'client.end()' call!")
         return false;
       } else if (rowCount >= 2) {
         client.end();
-        console.log(`The row count was ${rowCount}!\nEntered the >= if marker`)
+        console.log(`The row count was ${rowCount}!\nEntered the >= if marker`);
         throw "ERROR: More than one item returned on for Primary Key. Please check database";
       } else {
-        console.log(`The row count was ${rowCount}!\nEntered the else marker`)
+        console.log(`The row count was ${rowCount}!\nEntered the else marker`);
         console.log(rowCount);
         client.end();
         return true;
