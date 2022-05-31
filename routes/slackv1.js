@@ -29,27 +29,23 @@ const PostgresCheckExist = async (id) => {
       [id]
     );
     console.log(`Number of DB entried for id ${id}: ${entries.rowCount}`);
-    // (err, res) => {
-    //   console.log(res.rowCount);
-    //   const rowCount = res.rowCount;
-    //   if (err) throw err;
-    //   if (rowCount <= 0) {
-    //     console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
-    //     client.end();
-    //     console.log(`Made is passed the 'client.end()' call!`);
-    //     return false;
-    //   } else if (rowCount >= 2) {
-    //     client.end();
-    //     console.log(`The row count was ${rowCount}!\nEntered the >= if marker`);
-    //     throw "ERROR: More than one item returned on for Primary Key. Please check database";
-    //   } else {
-    //     console.log(`The row count was ${rowCount}!\nEntered the else marker`);
-    //     console.log(rowCount);
-    //     client.end();
-    //     return true;
-    //   }
-    // });
-    return false;
+    const rowCount = entries.rowCount;
+    if (err) throw err;
+    if (rowCount <= 0) {
+      console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
+      client.end();
+      console.log(`Made is passed the 'client.end()' call!`);
+      return false;
+    } else if (rowCount >= 2) {
+      client.end();
+      console.log(`The row count was ${rowCount}!\nEntered the >= if marker`);
+      throw "ERROR: More than one item returned on for Primary Key. Please check database";
+    } else {
+      console.log(`The row count was ${rowCount}!\nEntered the else marker`);
+      console.log(rowCount);
+      client.end();
+      return true;
+    }
   } catch (err) {
     console.error(err);
   }
@@ -120,9 +116,12 @@ v1.get("/auth", (req, res) => {
       const refresh_token = res.data.refresh_token;
       const time_to_refresh = res.data.time_to_refresh;
       if (res.data.hasOwnProperty("bot_user_id")) {
+          console.log(`Check bot user ID for token`)
         const id = res.data.bot_user_id;
-        if (PostgresCheckExist(res.data.bot_user_id)) {
+        if (await PostgresCheckExist(res.data.bot_user_id)) {
+            console.log(`Postgres Checked and found that the Bot User does exist in db`)
         } else {
+            console.log(`Postgres Checked and found that the Bot User does not exist in db`)
           let date = new Date();
           Date.prototype.addSecs = (s) => {
             this.setTime(this.getTime() + s * 1000);
@@ -132,6 +131,7 @@ v1.get("/auth", (req, res) => {
           PostgresAddOauth(id, token, refresh_token, date);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
+          console.log(`Check user ID for token`)
         if (PostgresCheckExist(res.data.user_id)) {
         }
       }
