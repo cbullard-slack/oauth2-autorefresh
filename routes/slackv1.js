@@ -13,17 +13,17 @@ const CONNECTION_STRING = process.env.DATABASE_URL;
 const API_URL = "https://slack.com/api/";
 
 const PostgresConnect = async () => {
-    const client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      });
-      
-      await client.connect();
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
 
-      return client;
-}
+  await client.connect();
+
+  return client;
+};
 
 const PostgresCheckExist = async (id) => {
   try {
@@ -138,8 +138,8 @@ v1.get("/auth", (req, res) => {
           );
           let date = new Date();
           date.setSeconds(date.getSeconds() + time_to_refresh);
-
-          await PostgresAddOauth(id, token, refresh_token, date);
+          console.log(`Refresh Date is: ${date}`);
+          //   await PostgresAddOauth(id, token, refresh_token, date);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
         console.log(`Check user ID for token`);
