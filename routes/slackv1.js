@@ -51,7 +51,7 @@ const PostgresCheckExist = async (id) => {
       return true;
     }
   } catch (err) {
-    console.error(`Error Line 49: ${err}`);
+    console.error(`${err}\n${console.trace()}`);
   }
 };
 
@@ -67,7 +67,7 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
       }
     );
   } catch (err) {
-    console.error(`Error Line 64: ${err}`);
+    console.error(`${err}\n${console.trace()}`);
   }
 }
 
@@ -87,7 +87,7 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
     //   }
     // );
   } catch (err) {
-    console.error(`Error Line 82: ${err}`);
+    console.error(`${err}\n${console.trace()}`);
   }
 }
 
@@ -96,10 +96,12 @@ v1.get("", async (req, res) => {
   const dateUTC = date.getUTCDate();
   const dateSeconds = date.getUTCSeconds();
   const time = date.getTime();
-  const timestamp = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getTimezoneOffset()}`
-  const resetDate = new Date(date.setSeconds(43200))
-  const resetTimestamp = `${resetDate.getFullYear()}-${resetDate.getMonth()}-${resetDate.getDate()} ${resetDate.getHours()}:${resetDate.getMinutes()}:${resetDate.getSeconds()} ${resetDate.getTimezoneOffset()}`
-  console.log(`The Current Date/Time is ${timestamp}\nThe token reset time will be: ${resetTimestamp}`);
+  const timestamp = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getTimezoneOffset()}`;
+  const resetDate = new Date(date.setSeconds(43200));
+  const resetTimestamp = `${resetDate.getFullYear()}-${resetDate.getMonth()}-${resetDate.getDate()} ${resetDate.getHours()}:${resetDate.getMinutes()}:${resetDate.getSeconds()} ${resetDate.getTimezoneOffset()}`;
+  console.log(
+    `The Current Date/Time is ${timestamp}\nThe token reset time will be: ${resetTimestamp}`
+  );
   res.json({ success: false });
 });
 
@@ -144,9 +146,10 @@ v1.get("/auth", (req, res) => {
           );
           let date = new Date();
           console.log(`Current Date is: ${date}`);
-          date.setSeconds(date.getSeconds() + time_to_refresh);
+          const refreshDate = new Date(date.setSeconds(time_to_refresh));
           console.log(`Refresh Date is: ${date}`);
-          //   await PostgresAddOauth(id, token, refresh_token, date);
+          const response = await PostgresAddOauth(id, token, refresh_token, refreshDate);
+          console.log(`Log Line 152: ${response}`);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
         console.log(`Check user ID for token`);
@@ -156,7 +159,7 @@ v1.get("/auth", (req, res) => {
       console.log(res.data);
     })
     .catch((err) => {
-      console.error(`Error Line 144: ${err}`);
+      console.error(`${err}\n${console.trace()}`);
     });
   res.send(200);
   //   res.redirect('/sharks/shark-facts')
