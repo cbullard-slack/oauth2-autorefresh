@@ -67,10 +67,12 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
 
 async function PostgresAddOauth(id, token, refreshToken, time) {
   try {
+    client.connect();
     const res = await client.query(
       `INSERT INTO oauth([ id, token, refresh, refresh_token) VALUES ([ $1, $2, $3, $4]) ;`,
       [id, token, time, refreshToken]
     );
+    client.end();
     console.log(res);
     //   (err, res) => {
     //     if (err) throw err;
