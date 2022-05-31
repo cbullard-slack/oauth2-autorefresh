@@ -129,8 +129,8 @@ v1.get("/auth", (req, res) => {
             `Postgres Checked and found that the Bot User does not exist in db`
           );
           let date = new Date();
-          date.prototype.addSecs = (s) => {
-            this.setTime(this.getTime() + s * 1000);
+          Date.prototype.addSecs = (s) => {
+            this.setSeconds(this.getSeconds() + s);
             return this;
           };
           date.addSecs(time_to_refresh);
