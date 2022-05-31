@@ -129,11 +129,8 @@ v1.get("/auth", (req, res) => {
             `Postgres Checked and found that the Bot User does not exist in db`
           );
           let date = new Date();
-          Date.prototype.addSecs = (s) => {
-            Date.setSeconds(Date.getSeconds() + s);
-            return this;
-          };
-          date.addSecs(time_to_refresh);
+          date.setSeconds(date.getSeconds() + time_to_refresh);
+
           await PostgresAddOauth(id, token, refresh_token, date);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
