@@ -10,19 +10,24 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CONNECTION_STRING = process.env.DATABASE_URL;
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
-client.connect();
-
 const API_URL = "https://slack.com/api/";
+
+const PostgresConnect = async () => {
+    const client = new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      });
+      
+      await client.connect();
+
+      return client;
+}
 
 const PostgresCheckExist = async (id) => {
   try {
+    const client = await PostgresConnect();
     console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
     const entries = await client.query(
       `SELECT token from oauth where id = $1;`,
@@ -52,6 +57,7 @@ const PostgresCheckExist = async (id) => {
 
 async function PostgresUpdateOauth(id, token, refreshToken, time) {
   try {
+    const client = await PostgresConnect();
     client.query(
       `UPDATE oauth SET token = ${token}, refresh = ${time}, refresh_token = ${refreshToken} where id = '${id}';`,
       (err, res) => {
@@ -67,7 +73,7 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
 
 async function PostgresAddOauth(id, token, refreshToken, time) {
   try {
-    client.connect();
+    const client = await PostgresConnect();
     const res = await client.query(
       `INSERT INTO oauth([ id, token, refresh, refresh_token) VALUES ([ $1, $2, $3, $4]) ;`,
       [id, token, time, refreshToken]
