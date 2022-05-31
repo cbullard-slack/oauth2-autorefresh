@@ -80,10 +80,8 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  PostgresCheckExist(1).then((response) => {
-    console.log(response);
-  });
-  //   console.log(exists);
+  const exists = await PostgresCheckExist(1);
+  console.log(exists);
   res.json({ success: false });
 });
 
