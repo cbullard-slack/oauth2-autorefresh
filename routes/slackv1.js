@@ -44,6 +44,7 @@ const PostgresCheckExist = async (id) => {
         return true;
       }
     });
+    return false;
   } catch (err) {
     console.error(err);
   }
