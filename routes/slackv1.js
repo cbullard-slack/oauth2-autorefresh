@@ -130,7 +130,7 @@ v1.get("/auth", (req, res) => {
           );
           let date = new Date();
           Date.prototype.addSecs = (s) => {
-            this.setSeconds(this.getSeconds() + s);
+            Date.setSeconds(Date.getSeconds() + s);
             return this;
           };
           date.addSecs(time_to_refresh);
