@@ -28,9 +28,8 @@ const PostgresCheckExist = async (id) => {
       `SELECT token from oauth where id = $1;`,
       [id]
     );
-    console.log(`Number of DB entried for id ${id}: ${entries.rowCount}`);
+    console.log(`Number of DB entries for id ${id}: ${entries.rowCount}`);
     const rowCount = entries.rowCount;
-    if (err) throw err;
     if (rowCount <= 0) {
       console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
       client.end();
@@ -68,14 +67,17 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
 
 async function PostgresAddOauth(id, token, refreshToken, time) {
   try {
-    client.query(
-      `INSERT INTO oauth([ id, token, refresh, refresh_token) VALUES ([ ${id},${token}, ${time}, ${refreshToken}) ;`,
-      (err, res) => {
-        if (err) throw err;
-
-        console.log(res);
-      }
+    const res = await client.query(
+      `INSERT INTO oauth([ id, token, refresh, refresh_token) VALUES ([ $1, $2, $3, $4]) ;`,
+      [id, token, time, refreshToken]
     );
+    console.log(res);
+    //   (err, res) => {
+    //     if (err) throw err;
+
+    //     console.log(res);
+    //   }
+    // );
   } catch (err) {
     console.error(err);
   }
@@ -116,22 +118,26 @@ v1.get("/auth", (req, res) => {
       const refresh_token = res.data.refresh_token;
       const time_to_refresh = res.data.time_to_refresh;
       if (res.data.hasOwnProperty("bot_user_id")) {
-          console.log(`Check bot user ID for token`)
+        console.log(`Check bot user ID for token`);
         const id = res.data.bot_user_id;
         if (await PostgresCheckExist(res.data.bot_user_id)) {
-            console.log(`Postgres Checked and found that the Bot User does exist in db`)
+          console.log(
+            `Postgres Checked and found that the Bot User does exist in db`
+          );
         } else {
-            console.log(`Postgres Checked and found that the Bot User does not exist in db`)
+          console.log(
+            `Postgres Checked and found that the Bot User does not exist in db`
+          );
           let date = new Date();
-          Date.prototype.addSecs = (s) => {
+          date.prototype.addSecs = (s) => {
             this.setTime(this.getTime() + s * 1000);
             return this;
           };
           date.addSecs(time_to_refresh);
-          PostgresAddOauth(id, token, refresh_token, date);
+          await PostgresAddOauth(id, token, refresh_token, date);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
-          console.log(`Check user ID for token`)
+        console.log(`Check user ID for token`);
         if (PostgresCheckExist(res.data.user_id)) {
         }
       }
