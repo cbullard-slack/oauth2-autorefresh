@@ -96,7 +96,8 @@ v1.get("", async (req, res) => {
   const dateUTC = date.getUTCDate();
   const dateSeconds = date.getUTCSeconds();
   const time = date.getTime();
-  console.log(`The current time is ${time}\nThe current UTC date is ${dateUTC}\nThe current UTC seconds ${dateSeconds}`);
+  const timestamp = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getTimezoneOffset()}`
+  console.log(`The Current Date/Time is ${timestamp}`);
   res.json({ success: false });
 });
 
