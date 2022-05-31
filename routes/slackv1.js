@@ -137,6 +137,7 @@ v1.get("/auth", (req, res) => {
             `Postgres Checked and found that the Bot User does not exist in db`
           );
           let date = new Date();
+          console.log(`Current Date is: ${date}`);
           date.setSeconds(date.getSeconds() + time_to_refresh);
           console.log(`Refresh Date is: ${date}`);
           //   await PostgresAddOauth(id, token, refresh_token, date);
