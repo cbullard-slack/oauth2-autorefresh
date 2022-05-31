@@ -97,7 +97,9 @@ v1.get("", async (req, res) => {
   const dateSeconds = date.getUTCSeconds();
   const time = date.getTime();
   const timestamp = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getTimezoneOffset()}`
-  console.log(`The Current Date/Time is ${timestamp}`);
+  const resetDate = new Date(time+43200)
+  const resetTimestamp = `${resetDate.getFullYear()}-${resetDate.getMonth()}-${resetDate.getDate()} ${resetDate.getHours()}:${resetDate.getMinutes()}:${resetDate.getSeconds()} ${resetDate.getTimezoneOffset()}`
+  console.log(`The Current Date/Time is ${timestamp}\nThe token reset time will be: ${resetTimestamp}`);
   res.json({ success: false });
 });
 
