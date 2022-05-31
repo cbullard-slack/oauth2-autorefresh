@@ -16,7 +16,7 @@ const PostgresCheckExist = async (id) => {
   try {
     console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
     const { rows } = await db.query(
-      `SELECT token from oauth where id = '${id}';`
+      `SELECT token from oauth where id = $1;` [id], 
     );
     // const {rows} = await client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
     console.log(rows[0]);
