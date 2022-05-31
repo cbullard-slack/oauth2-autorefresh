@@ -28,7 +28,7 @@ const PostgresCheckExist = async (id) => {
       `SELECT token from oauth where id = $1;`,
       [id]
     );
-    console.log(`Number of DB entried for id ${id}: ${entries}`);
+    console.log(`Number of DB entried for id ${id}: ${entries.rowCount}`);
     // (err, res) => {
     //   console.log(res.rowCount);
     //   const rowCount = res.rowCount;
