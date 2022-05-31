@@ -46,7 +46,7 @@ const PostgresCheckExist = async (id) => {
       return true;
     }
   } catch (err) {
-    console.error(err);
+    console.error(`Error Line 49: ${err}`);
   }
 };
 
@@ -61,7 +61,7 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
       }
     );
   } catch (err) {
-    console.error(err);
+    console.error(`Error Line 64: ${err}`);
   }
 }
 
@@ -79,7 +79,7 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
     //   }
     // );
   } catch (err) {
-    console.error(err);
+    console.error(`Error Line 82: ${err}`);
   }
 }
 
@@ -141,7 +141,7 @@ v1.get("/auth", (req, res) => {
       console.log(res.data);
     })
     .catch((err) => {
-      console.error(err);
+      console.error(`Error Line 144: ${err}`);
     });
   res.send(200);
   //   res.redirect('/sharks/shark-facts')
