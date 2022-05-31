@@ -92,8 +92,10 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  const exists = await PostgresCheckExist(1);
-  console.log(exists);
+  const date = new Date();
+  const dateUTC = date.getUTCDate();
+  const dateSeconds = date.getUTCSeconds();
+  console.log(`The current date is ${date}\nThe current UTC date is ${dateUTC}\nThe current UTC seconds ${dateSeconds}`);
   res.json({ success: false });
 });
 
