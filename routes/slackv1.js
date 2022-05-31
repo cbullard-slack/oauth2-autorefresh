@@ -95,7 +95,8 @@ v1.get("", async (req, res) => {
   const date = new Date();
   const dateUTC = date.getUTCDate();
   const dateSeconds = date.getUTCSeconds();
-  console.log(`The current date is ${date}\nThe current UTC date is ${dateUTC}\nThe current UTC seconds ${dateSeconds}`);
+  const time = date.getTime();
+  console.log(`The current time is ${time}\nThe current UTC date is ${dateUTC}\nThe current UTC seconds ${dateSeconds}`);
   res.json({ success: false });
 });
 
