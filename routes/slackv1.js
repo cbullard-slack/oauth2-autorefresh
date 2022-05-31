@@ -110,7 +110,7 @@ v1.get("/auth", (req, res) => {
   params.append("code", query.code);
   axios
     .post(API_URL + "oauth.v2.access", params, config)
-    .then((res) => {
+    .then(async (res) => {
       const username = res.data.username;
       const token = res.data.token;
       const refresh_token = res.data.refresh_token;
