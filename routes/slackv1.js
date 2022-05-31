@@ -1,8 +1,8 @@
 const express = require("express");
 const axios = require("axios");
-const v1 = express.Router();
+const db = require("../db");
 
-const { Client } = require("pg");
+const v1 = express.Router();
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -10,40 +10,34 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const CONNECTION_STRING = process.env.DATABASE_URL;
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
-client.connect();
-
 const API_URL = "https://slack.com/api/";
 
 const PostgresCheckExist = async (id) => {
   try {
     console.log(`-=STARTING POSTGRES CHECK EXISTS=-`);
-    client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
-      console.log(res.rowCount);
-      const rowCount = res.rowCount;
-      if (err) throw err;
-      if (rowCount <= 0) {
-        console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
-        client.end();
-        console.log(`Made is passed the 'client.end()' call!`);
-        return false;
-      } else if (rowCount >= 2) {
-        client.end();
-        console.log(`The row count was ${rowCount}!\nEntered the >= if marker`);
-        throw "ERROR: More than one item returned on for Primary Key. Please check database";
-      } else {
-        console.log(`The row count was ${rowCount}!\nEntered the else marker`);
-        console.log(rowCount);
-        client.end();
-        return true;
-      }
-    });
+    const { rows } = await db.query(
+      `SELECT token from oauth where id = '${id}';`
+    );
+    // const {rows} = await client.query(`SELECT token from oauth where id = '${id}';`, (err, res) => {
+    console.log(rows[0]);
+    const rowCount = res.rowCount;
+    if (err) throw err;
+    if (rowCount <= 0) {
+      console.log(`The row count was ${rowCount}!\nEntered the <= if marker`);
+      client.end();
+      console.log(`Made is passed the 'client.end()' call!`);
+      return false;
+    } else if (rowCount >= 2) {
+      client.end();
+      console.log(`The row count was ${rowCount}!\nEntered the >= if marker`);
+      throw "ERROR: More than one item returned on for Primary Key. Please check database";
+    } else {
+      console.log(`The row count was ${rowCount}!\nEntered the else marker`);
+      console.log(rowCount);
+      client.end();
+      return true;
+    }
+    // });
     return false;
   } catch (err) {
     console.error(err);
