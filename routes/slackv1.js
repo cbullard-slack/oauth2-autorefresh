@@ -132,7 +132,7 @@ v1.get("/auth", (req, res) => {
       const username = res.data.username;
       const token = res.data.token;
       const refresh_token = res.data.refresh_token;
-      const time_to_refresh = res.data.time_to_refresh;
+      const time_to_refresh = res.data.expires_in;
       if (res.data.hasOwnProperty("bot_user_id")) {
         console.log(`Check bot user ID for token`);
         const id = res.data.bot_user_id;
@@ -146,8 +146,9 @@ v1.get("/auth", (req, res) => {
           );
           let date = new Date();
           console.log(`Current Date is: ${date}`);
+          console.log(time_to_refresh)
           const refreshDate = new Date(date.setSeconds(time_to_refresh));
-          console.log(`Refresh Date is: ${date}`);
+          console.log(`Refresh Date is: ${refreshDate}`);
           const response = await PostgresAddOauth(id, token, refresh_token, refreshDate);
           console.log(`Log Line 152: ${response}`);
         }
