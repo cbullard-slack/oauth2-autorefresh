@@ -60,12 +60,9 @@ const PostgresCheckExist = async (id) => {
 async function PostgresGetAllRefresh() {
   try {
     const client = await PostgresConnect();
-    console.log(`-=STARTING POSTGRES GET ALL REFRESH=-`);
-    const entries = await client.query(`SELECT $1 FROM oauth`,['*']);
-    console.log(`The entries are: ${entries}\nThe rows are: ${entries.rows}`);
-    client.end();
-    console.log(`The entries are: ${entries}\nThe rows are: ${entries.rows}`);
-    return entries.rows;
+    console.log(`-=STARTING POSTGRES GET REFRESH=-`);
+    const entries = await client.query(`SELECT refresh_token FROM oauth`, []);
+    console.log(entries.rows);
   } catch (err) {
     console.error(err);
   }
@@ -122,12 +119,10 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  const data_dump = await PostgresGetAllRefresh();
-  console.log(`Content in Data_Dump: ${data_dump}`);
-  for (let data in data_dump) {
-    let refresh_token = data.refresh_token;
-    console.log(refresh_token);
-  }
+  await PostgresGetAllRefresh();
+  let refresh_token = data.refresh_token;
+  console.log(refresh_token);
+
   res.json({ success: false });
 });
 
