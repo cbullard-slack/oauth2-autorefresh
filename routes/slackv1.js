@@ -59,13 +59,15 @@ const PostgresCheckExist = async (id) => {
 const PostgresGetRefresh = async (id) => {
   try {
     const client = await PostgresConnect();
+    console.log(client);
     console.log(`-=STARTING POSTGRES GET REFRESH=-`);
     const entries = await client.query(
       `SELECT refresh_token FROM oauth WHERE id = $1`,
       [id]
     );
+    console.log(entries);
     if (entries.rowCount <= 0 || entries.rowCount > 1) {
-      client / end();
+      client.end();
       throw new Error(
         `ERROR: More or less rows than expected from query\n${console.trace()}`
       );
