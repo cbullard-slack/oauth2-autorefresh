@@ -122,6 +122,7 @@ v1.get("/auth", async (req, res) => {
       Authorization: BOT_TOKEN,
     },
   };
+  console.log(req)
   const refresh_token = await PostgresGetRefresh(req.query.bot_user_id);
   params.append("client_id", CLIENT_ID);
   params.append("client_secret", CLIENT_SECRET);
