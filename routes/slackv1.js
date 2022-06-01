@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const schedule = require("node-schedule");
 const v1 = express.Router();
 
 const { Client } = require("pg");
@@ -56,6 +57,17 @@ const PostgresCheckExist = async (id) => {
   }
 };
 
+async function PostgresGetAllRefresh() {
+  try {
+    const client = await PostgresConnect();
+    console.log(`-=STARTING POSTGRES GET REFRESH=-`);
+    const entries = await client.query(`SELECT refresh_token FROM oauth`, []);
+    console.log(entries.rows);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 async function PostgresGetRefresh(id) {
   try {
     console.log(id);
@@ -107,7 +119,7 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  const refresh_token = await PostgresGetRefresh(req.query.user);
+  const refresh_token = await PostgresGetAllRefresh();
   console.log(refresh_token);
   res.json({ success: false });
 });
@@ -122,7 +134,7 @@ v1.get("/auth", async (req, res) => {
       Authorization: BOT_TOKEN,
     },
   };
-  console.log(req)
+  console.log(req);
   const refresh_token = await PostgresGetRefresh(req.query.bot_user_id);
   params.append("client_id", CLIENT_ID);
   params.append("client_secret", CLIENT_SECRET);
@@ -182,6 +194,25 @@ v1.get("/auth", async (req, res) => {
     });
   res.send(200);
   //   res.redirect('/sharks/shark-facts')
+});
+
+schedule.scheduleJob("* */6 * * *", async () => {
+  console.log(`Rotating Tokens`);
+  const params = new URLSearchParams();
+
+  const config = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: BOT_TOKEN,
+    },
+  };
+  console.log(req);
+  const refresh_token = await PostgresGetRefresh(req.query.bot_user_id);
+  params.append("client_id", CLIENT_ID);
+  params.append("client_secret", CLIENT_SECRET);
+  params.append("grant_type", "refresh_token");
+  params.append("refresh_token", refresh_token);
+  const res = await axios.post();
 });
 
 module.exports = v1;
