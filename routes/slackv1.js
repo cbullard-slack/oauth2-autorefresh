@@ -64,14 +64,12 @@ const PostgresGetRefresh = async (id) => {
       `SELECT refresh_token FROM oauth WHERE id = $1`,
       [id]
     );
-    console.log(entries.rows);
     if (entries.rowCount <= 0 || entries.rowCount > 1) {
       client.end();
       throw new Error(
         `ERROR: More or less rows than expected from query\n${console.trace()}`
       );
     } else {
-      console.log(entries.rows);
       client.end();
       return entries.rows[0].refresh_token;
     }
@@ -84,12 +82,8 @@ async function PostgresUpdateOauth(id, token, refreshToken, time) {
   try {
     const client = await PostgresConnect();
     client.query(
-      `UPDATE oauth SET token = ${token}, refresh = ${time}, refresh_token = ${refreshToken} where id = '${id}';`,
-      (err, res) => {
-        if (err) throw err;
-
-        console.log(res);
-      }
+      `UPDATE oauth SET token = $1, refresh = $2, refresh_token = $3 where id = $4;`,
+      [token, time, refreshToken,id]
     );
   } catch (err) {
     console.error(`${err}\n${console.trace()}`);
@@ -105,12 +99,6 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
     );
     client.end();
     console.log(res);
-    //   (err, res) => {
-    //     if (err) throw err;
-
-    //     console.log(res);
-    //   }
-    // );
   } catch (err) {
     console.error(`${err}\n${console.trace()}`);
   }
@@ -132,12 +120,11 @@ v1.get("/auth", (req, res) => {
       Authorization: BOT_TOKEN,
     },
   };
-
+  const refresh_token = await PostgresGetRefresh(req.query.user);
   params.append("client_id", CLIENT_ID);
   params.append("client_secret", CLIENT_SECRET);
   params.append("grant_type", "refresh_token");
-  params.append("refresh_token", REFRESH_TOKEN);
-  console.log(REFRESH_TOKEN);
+  params.append("refresh_token", refresh_token);
   if (!query.hasOwnProperty("code")) {
     res.status(418).send("No Code");
     return;
@@ -157,6 +144,12 @@ v1.get("/auth", (req, res) => {
           console.log(
             `Postgres Checked and found that the Bot User does exist in db`
           );
+          let date = new Date();
+          console.log(`Current Date is: ${date}`);
+          console.log(time_to_refresh);
+          const refreshDate = new Date(date.setSeconds(time_to_refresh));
+          console.log(`Refresh Date is: ${refreshDate}`);
+          await PostgresUpdateOauth(id,token,refresh_token,refreshDate);
         } else {
           console.log(
             `Postgres Checked and found that the Bot User does not exist in db`
