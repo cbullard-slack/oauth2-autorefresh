@@ -73,7 +73,7 @@ const PostgresGetRefresh = async (id) => {
     } else {
       console.log(entries.rows);
       client.end();
-      return entries.rows;
+      return entries.rows[0].refresh_token;
     }
   } catch (err) {
     console.error(err);
