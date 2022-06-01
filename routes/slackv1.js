@@ -64,6 +64,7 @@ async function PostgresGetAllRefresh() {
     const entries = await client.query(`SELECT refresh_token FROM oauth`, []);
     console.log(entries.rows);
     client.end();
+    console.lot(entries.rows);
     return entries.rows;
   } catch (err) {
     console.error(err);
@@ -122,11 +123,11 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 
 v1.get("", async (req, res) => {
   const data_dump = await PostgresGetAllRefresh();
+  console.log(data_dump);
   let i = 0;
-  for (let data in data_dump)
-  {
-      console.log(`Data from slot ${i} is ${data}`)
-      i++;
+  for (let data in data_dump) {
+    console.log(`Data from slot ${i} is ${data}`);
+    i++;
   }
   res.json({ success: false });
 });
