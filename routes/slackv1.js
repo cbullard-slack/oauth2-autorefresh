@@ -116,7 +116,7 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  console.log(req.params);
+  console.log(req);
   res.json({ success: false });
 });
 
