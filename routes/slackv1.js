@@ -125,10 +125,10 @@ v1.get("", async (req, res) => {
   const data_dump = await PostgresGetAllRefresh();
   console.log(data_dump.length);
   let i = 0;
-  for (let data in data_dump) {
+  data_dump.forEach((data) => {
     console.log(`Data from slot ${i} is ${data}`);
     i++;
-  }
+  });
   res.json({ success: false });
 });
 
