@@ -116,7 +116,8 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  console.log(req.query);
+  const refresh_token = await PostgresGetRefresh(req.query.user);
+  console.log(refresh_token);
   res.json({ success: false });
 });
 
