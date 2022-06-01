@@ -56,7 +56,7 @@ const PostgresCheckExist = async (id) => {
   }
 };
 
-const PostgresGetRefresh = async (id) => {
+async function PostgresGetRefresh (id) {
   try {
     const client = await PostgresConnect();
     console.log(`-=STARTING POSTGRES GET REFRESH=-`);
