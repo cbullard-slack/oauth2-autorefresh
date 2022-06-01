@@ -64,6 +64,7 @@ async function PostgresGetRefresh (id) {
       `SELECT refresh_token FROM oauth WHERE id = $1`,
       [id]
     );
+    console.log(entries.rows);
     if (entries.rowCount <= 0 || entries.rowCount > 1) {
       client.end();
       throw new Error(
