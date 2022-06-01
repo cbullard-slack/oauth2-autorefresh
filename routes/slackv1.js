@@ -120,7 +120,7 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 
 v1.get("", async (req, res) => {
   for (let data in await PostgresGetAllRefresh()) {
-    let refresh_token = data.refresh_token
+    let refresh_token = data.refresh_token;
     console.log(refresh_token);
   }
   res.json({ success: false });
@@ -198,26 +198,26 @@ v1.get("/auth", async (req, res) => {
   //   res.redirect('/sharks/shark-facts')
 });
 
-schedule.scheduleJob("* */6 * * *", async () => {
-  console.log(`Rotating Tokens`);
-  const params = new URLSearchParams();
+// schedule.scheduleJob("* */6 * * *", async () => {
+//   console.log(`Rotating Tokens`);
+//   const params = new URLSearchParams();
 
-  const config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: BOT_TOKEN,
-    },
-  };
-  console.log(req);
-  const refresh_tokens = await PostgresGetAllRefresh();
-  for (let data in refresh_tokens) {
-    params.append("client_id", CLIENT_ID);
-    params.append("client_secret", CLIENT_SECRET);
-    params.append("grant_type", "refresh_token");
-    params.append("refresh_token", refresh_token);
-    const res = await axios.post();
-  }
-});
+//   const config = {
+//     headers: {
+//       "Content-Type": "application/x-www-form-urlencoded",
+//       Authorization: BOT_TOKEN,
+//     },
+//   };
+//   console.log(req);
+//   const refresh_tokens = await PostgresGetAllRefresh();
+//   for (let data in refresh_tokens) {
+//     params.append("client_id", CLIENT_ID);
+//     params.append("client_secret", CLIENT_SECRET);
+//     params.append("grant_type", "refresh_token");
+//     params.append("refresh_token", refresh_token);
+//     const res = await axios.post();
+//   }
+// });
 
 module.exports = v1;
 
