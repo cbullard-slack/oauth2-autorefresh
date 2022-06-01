@@ -3,6 +3,7 @@ const axios = require("axios");
 const v1 = express.Router();
 
 const { Client } = require("pg");
+const ConnectionParameters = require("pg/lib/connection-parameters");
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -55,6 +56,29 @@ const PostgresCheckExist = async (id) => {
   }
 };
 
+const PostgresGetRefresh = async (id) => {
+  try {
+    const client = await PostgresConnect();
+    console.log(`-=STARTING POSTGRES GET REFRESH=-`);
+    const entries = await client.query(
+      `SELECT refresh_token FROM oauth WHERE id = $1`,
+      [id]
+    );
+    if (entries.rowCount <= 0 || entries.rowCount > 1) {
+      client / end();
+      throw new Error(
+        `ERROR: More or less rows than expected from query\n${console.trace()}`
+      );
+    } else {
+      console.log(entries[0]);
+      client.end();
+      return entries[0];
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 async function PostgresUpdateOauth(id, token, refreshToken, time) {
   try {
     const client = await PostgresConnect();
@@ -92,16 +116,7 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  const date = new Date();
-  const dateUTC = date.getUTCDate();
-  const dateSeconds = date.getUTCSeconds();
-  const time = date.getTime();
-  const timestamp = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getTimezoneOffset()}`;
-  const resetDate = new Date(date.setSeconds(43200));
-  const resetTimestamp = `${resetDate.getFullYear()}-${resetDate.getMonth()}-${resetDate.getDate()} ${resetDate.getHours()}:${resetDate.getMinutes()}:${resetDate.getSeconds()} ${resetDate.getTimezoneOffset()}`;
-  console.log(
-    `The Current Date/Time is ${timestamp}\nThe token reset time will be: ${resetTimestamp}`
-  );
+  console.log(req.params);
   res.json({ success: false });
 });
 
@@ -130,7 +145,7 @@ v1.get("/auth", (req, res) => {
     .post(API_URL + "oauth.v2.access", params, config)
     .then(async (res) => {
       const username = res.data.username;
-      const token = res.data.token;
+      const token = res.data.access_token;
       const refresh_token = res.data.refresh_token;
       const time_to_refresh = res.data.expires_in;
       if (res.data.hasOwnProperty("bot_user_id")) {
@@ -146,10 +161,15 @@ v1.get("/auth", (req, res) => {
           );
           let date = new Date();
           console.log(`Current Date is: ${date}`);
-          console.log(time_to_refresh)
+          console.log(time_to_refresh);
           const refreshDate = new Date(date.setSeconds(time_to_refresh));
           console.log(`Refresh Date is: ${refreshDate}`);
-          const response = await PostgresAddOauth(id, token, refresh_token, refreshDate);
+          const response = await PostgresAddOauth(
+            id,
+            token,
+            refresh_token,
+            refreshDate
+          );
           console.log(`Log Line 152: ${response}`);
         }
       } else if (res.data.hasOwnProperty("user_id")) {
@@ -176,3 +196,14 @@ module.exports = v1;
 //     host:"ec2-54-204-56-171.compute-1.amazonaws.com",
 //     ssl:true
 // });
+
+// const date = new Date();
+//   const dateUTC = date.getUTCDate();
+//   const dateSeconds = date.getUTCSeconds();
+//   const time = date.getTime();
+//   const timestamp = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getTimezoneOffset()}`;
+//   const resetDate = new Date(date.setSeconds(43200));
+//   const resetTimestamp = `${resetDate.getFullYear()}-${resetDate.getMonth()}-${resetDate.getDate()} ${resetDate.getHours()}:${resetDate.getMinutes()}:${resetDate.getSeconds()} ${resetDate.getTimezoneOffset()}`;
+//   console.log(
+//     `The Current Date/Time is ${timestamp}\nThe token reset time will be: ${resetTimestamp}`
+//   );
