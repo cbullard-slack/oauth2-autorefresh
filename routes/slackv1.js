@@ -60,7 +60,7 @@ const PostgresCheckExist = async (id) => {
 async function PostgresGetAllRefresh() {
   try {
     const client = await PostgresConnect();
-    console.log(`-=STARTING POSTGRES GET REFRESH=-`);
+    console.log(`-=STARTING POSTGRES GET All REFRESH=-`);
     const entries = await client.query(`SELECT refresh_token FROM oauth`, []);
     console.log(entries.rows);
   } catch (err) {
@@ -120,8 +120,8 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 
 v1.get("", async (req, res) => {
   await PostgresGetAllRefresh();
-  let refresh_token = data.refresh_token;
-  console.log(refresh_token);
+  //   let refresh_token = data.refresh_token;
+  //   console.log(refresh_token);
 
   res.json({ success: false });
 });
