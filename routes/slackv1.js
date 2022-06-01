@@ -110,7 +110,7 @@ v1.get("", async (req, res) => {
   res.json({ success: false });
 });
 
-v1.get("/auth", (req, res) => {
+v1.get("/auth", async (req, res) => {
   const query = req.query;
   const params = new URLSearchParams();
 
