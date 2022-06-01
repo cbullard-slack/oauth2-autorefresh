@@ -58,6 +58,7 @@ const PostgresCheckExist = async (id) => {
 
 async function PostgresGetRefresh (id) {
   try {
+      console.log(id);
     const client = await PostgresConnect();
     console.log(`-=STARTING POSTGRES GET REFRESH=-`);
     const entries = await client.query(
