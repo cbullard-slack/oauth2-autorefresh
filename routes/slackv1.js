@@ -63,6 +63,8 @@ async function PostgresGetAllRefresh() {
     console.log(`-=STARTING POSTGRES GET All REFRESH=-`);
     const entries = await client.query(`SELECT refresh_token FROM oauth`, []);
     console.log(entries.rows);
+    client.end();
+    return entries.rows;
   } catch (err) {
     console.error(err);
   }
