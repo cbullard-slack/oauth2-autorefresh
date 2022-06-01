@@ -121,10 +121,13 @@ async function PostgresAddOauth(id, token, refreshToken, time) {
 }
 
 v1.get("", async (req, res) => {
-  await PostgresGetAllRefresh();
-  //   let refresh_token = data.refresh_token;
-  //   console.log(refresh_token);
-
+  const data_dump = await PostgresGetAllRefresh();
+  let i = 0;
+  for (let data in data_dump)
+  {
+      console.log(`Data from slot ${i} is ${data}`)
+      i++;
+  }
   res.json({ success: false });
 });
 
