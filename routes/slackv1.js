@@ -126,7 +126,7 @@ v1.get("", async (req, res) => {
   console.log(data_dump.length);
   let i = 0;
   data_dump.forEach((data) => {
-    console.log(`Data from slot ${i} is ${data}`);
+    console.log(`Data from slot ${i} is ${data.refresh_token}`);
     i++;
   });
   res.json({ success: false });
